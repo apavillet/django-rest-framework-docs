@@ -24,7 +24,8 @@ class DocumentationGenerator():
         """
         if urlpatterns is None:
             urlpatterns = self.get_url_patterns()
-
+        else:
+            urlpatterns = self._flatten_patterns_tree(urlpatterns)
         self.urlpatterns = urlpatterns
 
     def get_docs(self, as_objects=False):
@@ -122,6 +123,8 @@ class DocumentationGenerator():
             docstring_meta = self.__parse_docstring__(docstring)
             doc.description = docstring_meta['description']
             doc.params = docstring_meta['params']
+            doc.name = docstring_meta['name']
+            doc.group = docstring_meta['group']
             doc.path = self.__get_path__(endpoint)
             doc.model = self.__get_model__(callback)
             doc.allowed_methods = self.__get_allowed_methods__(callback)
@@ -162,23 +165,35 @@ class DocumentationGenerator():
 
         docstring = self.__trim(docstring)
         split_lines = docstring.split('\n')
+        description_line = False
         trimmed = False  # Flag if string needs to be trimmed
         _params = []
+        name = None
+        group = None
         description = docstring
 
         for line in split_lines:
-            if not trimmed:
-                needle = line.find('--')
-                if needle != -1:
-                    trim_at = docstring.find(line)
-                    description = docstring[:trim_at]
-                    trimmed = True
-
+            print line
+            needle = line.find("name :")
+            if needle  != -1 :
+                name = line.split("name :")[1]
+            needle = line.find("group :")
+            if needle != -1 :
+                group = line.split("group :")[1]
+            needle = line.find("description :")
+            if needle != -1:
+                    description = line.split("description :")[1]
+                    #while true, add to description
+                    description_line = True
+            if ' -- ' in line :
+                description_line = False
             params = line.split(' -- ')
             if len(params) == 2:
                 _params.append([params[0].strip(), params[1].strip()])
+            if description_line :
+                description = description+line
 
-        return {'description': description, 'params': _params}
+        return {'description': description, 'params': _params,'name':name,"group":group}
 
 
     def __get_path__(self, endpoint):
@@ -256,3 +271,5 @@ class DocumentationGenerator():
         params = []
         allowed_methods = []
         model = None
+        name = None
+        groupe = None
