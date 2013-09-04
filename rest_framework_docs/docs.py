@@ -83,6 +83,9 @@ class DocumentationGenerator():
         pattern_list = []
         for pattern in patterns:
             if isinstance(pattern, RegexURLPattern):
+                print pattern._regex
+                print prefix
+                
                 pattern.__path = prefix + pattern._regex
                 pattern_list.append(pattern)
             elif isinstance(pattern, RegexURLResolver):
@@ -168,6 +171,7 @@ class DocumentationGenerator():
         description_line = False
         trimmed = False  # Flag if string needs to be trimmed
         _params = []
+        _exemples = []
         name = None
         group = None
         description = docstring
@@ -192,8 +196,9 @@ class DocumentationGenerator():
                 _params.append([params[0].strip(), params[1].strip()])
             if description_line :
                 description = description+line
-
-        return {'description': description, 'params': _params,'name':name,"group":group}
+            if ' ** ' in line :
+                _exemples.append({"text":line.split("**")[0],"url":line.split("**")[1]})
+        return {'description': description, 'params': _params,'name':name,"group":group,"exemples" : _exemples}
 
 
     def __get_path__(self, endpoint):
@@ -273,3 +278,4 @@ class DocumentationGenerator():
         model = None
         name = None
         groupe = None
+        exemples = None
