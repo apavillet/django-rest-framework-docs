@@ -195,7 +195,7 @@ class DocumentationGenerator():
             if description_line :
                 description = description+line
             if ' ** ' in line :
-                _exemples.append({"text":line.split("**")[0],"url":line.split("**")[1]})
+                _exemples.append({"text":line.split("**")[0],"url":line.split("**")[1].strip()})
         return {'description': description, 'params': _params,'name':name,"group":group,"exemples" : _exemples}
 
 
