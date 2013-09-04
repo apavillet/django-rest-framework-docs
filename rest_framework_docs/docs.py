@@ -83,8 +83,6 @@ class DocumentationGenerator():
         pattern_list = []
         for pattern in patterns:
             if isinstance(pattern, RegexURLPattern):
-                print pattern._regex
-                print prefix
                 
                 pattern.__path = prefix + pattern._regex
                 pattern_list.append(pattern)
@@ -177,7 +175,6 @@ class DocumentationGenerator():
         description = docstring
 
         for line in split_lines:
-            print line
             needle = line.find("name :")
             if needle  != -1 :
                 name = line.split("name :")[1]
