@@ -124,6 +124,7 @@ class DocumentationGenerator():
             docstring_meta = self.__parse_docstring__(docstring)
             doc.description = docstring_meta['description']
             doc.params = docstring_meta['params']
+            doc.exemples = docstring_meta["exemples"]
             doc.name = docstring_meta['name']
             doc.group = docstring_meta['group']
             doc.path = self.__get_path__(endpoint)
